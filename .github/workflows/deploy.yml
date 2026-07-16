@@ -6,53 +6,26 @@ on:
       - main
   workflow_dispatch:
 
-permissions:
-  contents: read
-
-concurrency:
-  group: voiceprompter-production
-  cancel-in-progress: true
-
 jobs:
   deploy:
-    name: Deploy to production
     runs-on: ubuntu-latest
-    timeout-minutes: 10
 
     steps:
-      - name: Configure SSH
-        shell: bash
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
-          SSH_HOST: ${{ secrets.HOST }}
-        run: |
-          set -euo pipefail
-          mkdir -p ~/.ssh
-          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/voiceprompter_deploy
-          chmod 600 ~/.ssh/voiceprompter_deploy
-          ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Pull main and deploy
-        shell: bash
-        env:
-          SSH_HOST: ${{ secrets.HOST }}
-          SSH_USER: ${{ secrets.USERNAME }}
-        run: |
-          set -euo pipefail
-          ssh -i ~/.ssh/voiceprompter_deploy -o IdentitiesOnly=yes "$SSH_USER@$SSH_HOST" 'bash -se' <<'REMOTE'
-          set -euo pipefail
-
-          REPO="/home/dprintso/repositories/VoicePrompter"
-          LIVE="/home/dprintso/voiceprompter.3dprintsos.com"
-
-          cd "$REPO"
-          git checkout main
-          git fetch origin main
-          git reset --hard origin/main
-
-          mkdir -p "$LIVE"
-
-          rsync -av             --exclude=".git/"             --exclude=".github/"             --exclude=".cpanel.yml"             --exclude=".gitignore"             --exclude="README.md"             --exclude="CHANGELOG.md"             "$REPO/" "$LIVE/"
-
-          echo "VoicePrompter deployment completed."
-          REMOTE
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./
+          server-dir: /
+          exclude: |
+            **/.git*
+            **/.github/**
+            README.md
+            CHANGELOG.md
