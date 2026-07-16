@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>VoicePrompter</title>
+  <meta name="theme-color" content="#24396f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="VoicePrompter" />
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<button id="mobileMenuBtn" class="mobile-menu-button" aria-label="Open controls" aria-expanded="false">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 6.5h18v2H3zm0 4.5h18v2H3zm0 4.5h18v2H3z"/></svg>
+</button>
+<div id="mobileMenuOverlay" class="mobile-menu-overlay"></div>
+<div class="app">
+  <header id="toolbar" class="toolbar">
+    <button id="mobileMenuClose" class="mobile-menu-close" aria-label="Close controls">&times;</button>
+    <div class="brand">Voice<span>Prompter</span></div>
+
+    <div class="group">
+      <button id="editBtn">Edit Script</button>
+      <button id="listenBtn" class="primary">Start Listening</button>
+      <button id="resetBtn">Restart</button>
+    </div>
+
+    <div class="group">
+      <span class="mini-label">Text</span>
+      <input id="fontSize" type="range" min="28" max="110" value="28" />
+      <span class="mini-label">Line</span>
+      <input id="lineHeight" type="range" min="110" max="190" value="110" />
+    </div>
+
+    <div class="group">
+      <span class="mini-label">Follow</span>
+      <select id="followStrength" title="How aggressively the page follows recognized speech">
+        <option value="0.22">Gentle</option>
+        <option value="0.38" selected>Normal</option>
+        <option value="0.58">Fast</option>
+      </select>
+      <button id="mirrorBtn">Mirror</button>
+    </div>
+
+    <div class="group">
+      <span class="mini-label">Manual speed</span>
+      <input id="manualSpeed" type="range" min="0" max="120" value="34" />
+      <button id="manualBtn">Manual Play</button>
+    </div>
+  </header>
+
+  <main class="stage-wrap">
+    <div class="focus-line"></div>
+    <div class="vignette"></div>
+    <div id="stage" class="stage">
+      <div id="script" class="script"></div>
+    </div>
+
+    <div class="status">
+      <span id="statusDot" class="dot"></span>
+      <span id="statusText">Ready</span>
+    </div>
+
+    <section id="editor" class="editor" aria-label="Script editor">
+      <div class="editor-head">
+        <div>
+          <strong>Teleprompter Script</strong>
+          <div class="hint">Paste your script below. The speech follower works best when you speak close to the wording on screen.</div>
+        </div>
+        <button id="closeEditor">Close</button>
+      </div>
+      <textarea id="scriptInput" spellcheck="true"></textarea>
+      <div class="editor-actions">
+        <button id="clearBtn" class="danger">Clear</button>
+        <button id="saveBtn" class="primary">Load Script</button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/nosleep.js@0.12.0/dist/NoSleep.min.js"></script>
+<script src="js/app.js" defer></script>
+</body>
+</html>
